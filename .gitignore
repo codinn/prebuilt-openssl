@@ -33,3 +33,6 @@
 openssl-*-ios/*
 openssl-*-osx/*
 openssl-*.tar.gz
+!openssl-*-ios.tar.gz
+!openssl-*-osx.tar.gz
+dist/openssl-*/

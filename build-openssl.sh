@@ -23,8 +23,8 @@ OPENSSL_VERSION="openssl-1.0.2d"
 ###################################
 #      OpenSSL Version
 ###################################
-OSX_DIST_OUTPUT="${OPENSSL_VERSION}-osx"
-IOS_DIST_OUTPUT="${OPENSSL_VERSION}-ios"
+OSX_DIST_OUTPUT="dist/${OPENSSL_VERSION}-osx"
+IOS_DIST_OUTPUT="dist/${OPENSSL_VERSION}-ios"
 ###################################
 
 ###################################
@@ -53,7 +53,7 @@ buildMac()
    export CC="${BUILD_TOOLS}/usr/bin/clang -mmacosx-version-min=${OSX_DEPLOYMENT_VERSION}"
 
    pushd . > /dev/null
-   cd "${OPENSSL_VERSION}"
+   cd "./dist/${OPENSSL_VERSION}"
    echo "Configure"
    ./Configure ${TARGET} --openssldir="/tmp/${OPENSSL_VERSION}-${ARCH}" &> "/tmp/${OPENSSL_VERSION}-${ARCH}.log"
    make >> "/tmp/${OPENSSL_VERSION}-${ARCH}.log" 2>&1
@@ -71,7 +71,7 @@ buildIOS()
    ARCH=$1
    
    pushd . > /dev/null
-   cd "${OPENSSL_VERSION}"
+   cd "./dist/${OPENSSL_VERSION}"
   
    if [[ "${ARCH}" == "i386" || "${ARCH}" == "x86_64" ]]; then
       PLATFORM="iPhoneSimulator"
@@ -131,7 +131,7 @@ else
 fi
 
 echo "Unpacking openssl"
-tar xfz "${OPENSSL_VERSION}.tar.gz"
+(cd ./dist;tar xfz "../${OPENSSL_VERSION}.tar.gz")
 
 echo "----------------------------------------"
 echo "OpenSSL version: ${OPENSSL_VERSION}"
@@ -142,12 +142,15 @@ echo " "
 
 buildMac "x86_64"
 
-echo "Copying OSX headers"
+echo "Copying OS X headers"
 cp /tmp/${OPENSSL_VERSION}-x86_64/include/openssl/* ${OSX_DIST_OUTPUT}/include/openssl/
 
-echo "Copying OSX libraries"
+echo "Copying OS X libraries"
 cp /tmp/${OPENSSL_VERSION}-x86_64/lib/libcrypto.a ${OSX_DIST_OUTPUT}/lib/libcrypto.a
 cp /tmp/${OPENSSL_VERSION}-x86_64/lib/libssl.a ${OSX_DIST_OUTPUT}/lib/libssl.a
+
+echo "Compress OS X libraries"
+tar --exclude='*DS_Store' -zcf openssl-1.0.2d-osx.tar.gz openssl-1.0.2d-osx
 
 echo "----------------------------------------"
 echo "OpenSSL version: ${OPENSSL_VERSION}"
@@ -178,6 +181,9 @@ lipo \
    "/tmp/${OPENSSL_VERSION}-iOS-i386/lib/libssl.a" \
    "/tmp/${OPENSSL_VERSION}-iOS-x86_64/lib/libssl.a" \
    -create -output ${IOS_DIST_OUTPUT}/lib/libssl.a
+
+echo "Compress iOS libraries"
+tar --exclude='*DS_Store' -zcf openssl-1.0.2d-ios.tar.gz openssl-1.0.2d-ios
 
 echo "Cleaning up"
 rm -rf /tmp/${OPENSSL_VERSION}-*
