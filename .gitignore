@@ -30,3 +30,6 @@
 
 # Debug files
 *.dSYM/
+openssl-*-ios/*
+openssl-*-osx/*
+openssl-*.tar.gz
