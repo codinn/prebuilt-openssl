@@ -17,7 +17,7 @@ set -e
 ###################################
 #      OpenSSL Version
 ###################################
-OPENSSL_VERSION="openssl-1.0.2d"
+OPENSSL_VERSION="openssl-1.1.0e"
 ###################################
 
 ###################################
@@ -150,7 +150,7 @@ cp /tmp/${OPENSSL_VERSION}-x86_64/lib/libcrypto.a ${OSX_DIST_OUTPUT}/lib/libcryp
 cp /tmp/${OPENSSL_VERSION}-x86_64/lib/libssl.a ${OSX_DIST_OUTPUT}/lib/libssl.a
 
 echo "Compress OS X libraries"
-tar --exclude='*DS_Store' -zcf openssl-1.0.2d-osx.tar.gz openssl-1.0.2d-osx
+tar --exclude='*DS_Store' -zcf ${OPENSSL_VERSION}-osx.tar.gz ${OPENSSL_VERSION}-osx
 
 echo "----------------------------------------"
 echo "OpenSSL version: ${OPENSSL_VERSION}"
@@ -183,7 +183,7 @@ lipo \
    -create -output ${IOS_DIST_OUTPUT}/lib/libssl.a
 
 echo "Compress iOS libraries"
-tar --exclude='*DS_Store' -zcf openssl-1.0.2d-ios.tar.gz openssl-1.0.2d-ios
+tar --exclude='*DS_Store' -zcf ${OPENSSL_VERSION}-ios.tar.gz ${OPENSSL_VERSION}-ios
 
 echo "Cleaning up"
 rm -rf /tmp/${OPENSSL_VERSION}-*
